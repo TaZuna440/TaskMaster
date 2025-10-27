@@ -1,14 +1,4 @@
 @charset "UTF-8";
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 @keyframes slideUp {
   0% {
     opacity: 0;
@@ -21,16 +11,6 @@
   100% {
     opacity: 0;
     transform: translate(-50%, -100%);
-  }
-}
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
   }
 }
 * {
@@ -815,115 +795,140 @@ footer {
   background: #222;
   color: #f0f0f0;
   padding: 5rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 .contact-section .contact-container {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
   gap: 3rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 1100px;
+  width: 100%;
+  background: rgba(51.68, 51.68, 51.68, 0.9);
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  padding: 3rem;
+  border: 1px solid rgba(0, 123, 255, 0.1);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
 }
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .contact-section .contact-container {
     flex-direction: column;
-    gap: 2rem;
+    padding: 2rem;
   }
 }
-.contact-section .contact-left {
+.contact-section .contact-container .contact-left,
+.contact-section .contact-container .contact-right {
   flex: 1;
-  background: rgb(51.68, 51.68, 51.68);
-  padding: 2.5rem;
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(0, 123, 255, 0.1);
-  animation: fadeIn 1s ease forwards;
 }
-.contact-section .contact-left h2 {
-  color: #007bff;
-  margin-bottom: 1.5rem;
-  font-size: 2rem;
-}
-.contact-section .contact-left p {
-  color: #f0f0f0;
-  opacity: 0.9;
-  margin-bottom: 0.8rem;
-}
-.contact-section .contact-left .info-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-.contact-section .contact-left .info-item i {
-  color: #007bff;
-  font-size: 1.2rem;
-}
-.contact-section .contact-left .social-links {
-  margin-top: 1.5rem;
-}
-.contact-section .contact-left .social-links a {
-  color: #007bff;
-  font-size: 1.3rem;
-  margin-right: 1rem;
-  transition: 0.3s;
-}
-.contact-section .contact-left .social-links a:hover {
-  color: rgb(76.5, 162.6, 255);
-  transform: translateY(-2px);
-}
-.contact-section .contact-form {
-  flex: 1;
-  background: rgb(51.68, 51.68, 51.68);
-  padding: 2.5rem;
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(0, 123, 255, 0.1);
-  animation: fadeIn 1s ease forwards;
-}
-.contact-section .contact-form h2 {
-  color: #007bff;
-  margin-bottom: 1.5rem;
-  font-size: 2rem;
-}
-.contact-section .contact-form form {
+.contact-section .contact-container .contact-left {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+}
+.contact-section .contact-container .contact-left h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #007bff;
+}
+.contact-section .contact-container .contact-left p {
+  color: rgba(240, 240, 240, 0.9);
+  margin-bottom: 1rem;
+}
+.contact-section .contact-container .contact-left .contact-details {
+  margin-bottom: 1.5rem;
+}
+.contact-section .contact-container .contact-left .contact-details p {
+  margin: 0.5rem 0;
+}
+.contact-section .contact-container .contact-left .contact-details p i {
+  color: #007bff;
+  margin-right: 0.5rem;
+}
+.contact-section .contact-container .contact-left .contact-socials {
+  display: flex;
   gap: 1rem;
 }
-.contact-section .contact-form form input,
-.contact-section .contact-form form textarea {
+.contact-section .contact-container .contact-left .contact-socials a {
+  font-size: 1.5rem;
+  color: #007bff;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+.contact-section .contact-container .contact-left .contact-socials a:hover {
+  color: rgb(51, 149.4, 255);
+  transform: translateY(-3px);
+}
+.contact-section .contact-container .contact-right {
+  background: rgb(46.58, 46.58, 46.58);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.contact-section .contact-container .contact-right h2 {
+  font-size: 1.8rem;
+  color: #007bff;
+  margin-bottom: 1rem;
+}
+.contact-section .contact-container .contact-right form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.contact-section .contact-container .contact-right form input,
+.contact-section .contact-container .contact-right form textarea {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(0, 123, 255, 0.2);
+  border-radius: 6px;
   background: rgb(41.48, 41.48, 41.48);
-  border: 1px solid rgba(0, 123, 255, 0.15);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
   color: #f0f0f0;
   font-size: 1rem;
-  transition: 0.3s ease;
-}
-.contact-section .contact-form form input:focus,
-.contact-section .contact-form form textarea:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-}
-.contact-section .contact-form form textarea {
-  resize: none;
-  min-height: 120px;
-}
-.contact-section .contact-form form button {
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  cursor: pointer;
   transition: all 0.3s ease;
 }
-.contact-section .contact-form form button:hover {
-  background: transparent;
-  border: 2px solid #007bff;
-  color: #007bff;
-  transform: translateY(-2px);
+.contact-section .contact-container .contact-right form input:focus,
+.contact-section .contact-container .contact-right form textarea:focus {
+  border-color: #007bff;
+  background: rgb(36.38, 36.38, 36.38);
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+.contact-section .contact-container .contact-right form .btn {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 0.9rem 2rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+.contact-section .contact-container .contact-right form .btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+  background: rgb(25.5, 136.2, 255);
+}
+.contact-section .contact-container .contact-right form .btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.6s ease;
+}
+.contact-section .contact-container .contact-right form .btn:hover::after {
+  left: 100%;
+}
+.contact-section .contact-container .contact-right form .btn:active {
+  transform: translateY(0);
+  box-shadow: none;
 }/*# sourceMappingURL=styles.css.map */
