@@ -1,0 +1,1032 @@
+// Variables
+$primary-color: #001f3f;
+$secondary-color: #007bff;
+$text-color: #f0f0f0;
+$light-bg: #f9f9f9;
+$dark-bg: #222;
+$breakpoint-mobile: 768px;
+$breakpoint-tablet: 1024px;
+
+// Animation Keyframes
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 100%);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, 0%);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -100%);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Derived shades
+$primary-contrast: lighten($primary-color, 45%);
+$primary-bg: mix($primary-color, $dark-bg, 20%);
+$card-bg: mix($dark-bg, #ffffff, 92%); // darker card background for better contrast
+
+// Global Styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  color: $text-color;
+  background: $dark-bg;
+  line-height: 1.6;
+
+  &.no-scroll {
+    overflow: hidden;
+  }
+}
+
+.nav-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba($dark-bg, 0.7);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 1;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+
+  &.active {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+    animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      backdrop-filter: blur(0px);
+      -webkit-backdrop-filter: blur(0px);
+    }
+    to {
+      opacity: 1;
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+    }
+  }
+}
+
+  // Navbar
+  .navbar {
+    background: $dark-bg;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid rgba($secondary-color, 0.1);
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      position: relative;
+
+      .logo {
+        color: $text-color;
+        font-weight: bold;
+        font-size: 1.5rem;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        z-index: 2;
+        
+        span {
+          color: $secondary-color;
+        }
+
+        &:hover {
+          color: $secondary-color;
+        }
+      }
+
+      .burger-menu {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+        z-index: 3;
+        outline: none;
+
+        span {
+          display: block;
+          width: 25px;
+          height: 2px;
+          background-color: $text-color;
+          margin: 5px 0;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          transform-origin: center;
+
+          &:nth-child(2) {
+            width: 20px;
+            margin-left: auto;
+          }
+        }
+
+        @media (hover: hover) {
+          &:hover span {
+            background-color: $secondary-color;
+            
+            &:nth-child(2) {
+              transform: translateX(-5px);
+            }
+          }
+        }
+
+        &.active span {
+          &:first-child {
+            transform: translateY(7px) rotate(45deg);
+            background-color: $secondary-color;
+          }
+          &:nth-child(2) {
+            opacity: 0;
+            transform: translateX(-10px);
+          }
+          &:last-child {
+            transform: translateY(-7px) rotate(-45deg);
+            background-color: $secondary-color;
+          }
+        }
+
+        @media (max-width: $breakpoint-mobile) {
+          display: block;
+        }
+      }
+
+      nav {
+        @media (max-width: $breakpoint-mobile) {
+          position: fixed;
+          top: 0;
+          right: -100%;
+          width: 80%;
+          height: 100vh;
+          background: rgba($card-bg, 0.8);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          padding: 6rem 2rem 2rem;
+          transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+          border-left: 1px solid rgba($secondary-color, 0.1);
+          z-index: 2;
+
+          &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+              135deg,
+              rgba($primary-color, 0.1),
+              rgba($secondary-color, 0.05)
+            );
+            pointer-events: none;
+          }
+
+          &.active {
+            right: 0;
+
+            ul li {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
+          @keyframes slideIn {
+            from {
+              transform: translateX(30px);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+        }
+
+        ul {
+          display: flex;
+          gap: 1.5rem;
+          list-style: none;
+
+          @media (max-width: $breakpoint-mobile) {
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+
+            li {
+              opacity: 0;
+              transform: translateY(20px);
+              transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+              width: 100%;
+              text-align: center;
+
+              @for $i from 1 through 5 {
+                &:nth-child(#{$i}) {
+                  transition-delay: #{0.1 + ($i * 0.1)}s;
+                }
+              }
+            }
+          }
+
+          a {
+            text-decoration: none;
+            color: $text-color;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+            position: relative;
+            font-weight: 500;
+
+            &[href="#"] {
+              &.scroll-visible {
+                color: $secondary-color;
+                animation: pulse 2s infinite;
+
+                @keyframes pulse {
+                  0% {
+                    transform: scale(1);
+                  }
+                  50% {
+                    transform: scale(1.05);
+                  }
+                  100% {
+                    transform: scale(1);
+                  }
+                }
+
+                &::before {
+                content: '↑';
+                position: absolute;
+                left: -1.2rem;
+                bottom: 50%;
+                transform: translateX(-50%);
+                font-size: 0.8em;
+                opacity: 0;
+                transition: all 0.3s ease;
+                animation: slideUp 1.5s infinite;
+              }
+
+
+                @keyframes slideUp {
+                  0% {
+                    opacity: 0;
+                    transform: translate(-50%, 100%);
+                  }
+                  50% {
+                    opacity: 1;
+                    transform: translate(-50%, -50%);
+                  }
+                  100% {
+                    opacity: 0;
+                    transform: translate(-50%, -100%);
+                  }
+                }
+
+                &:hover::before {
+                  opacity: 1;
+                }
+              }
+            }
+
+            @media (min-width: $breakpoint-mobile) {
+              &::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: $secondary-color;
+                transition: width 0.3s ease;
+              }
+
+              &:hover::after {
+                width: 100%;
+              }
+
+              &[href="#"].scroll-visible::after {
+                width: 100%;
+                background: $secondary-color;
+                box-shadow: 0 0 10px rgba($secondary-color, 0.3);
+              }
+            }
+
+            &:hover {
+              color: $secondary-color;
+            }
+          }
+
+          .btn {
+            background: $secondary-color;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+
+            &:hover {
+              background: transparent;
+              border-color: $secondary-color;
+              color: $secondary-color;
+            }
+
+            @media (max-width: $breakpoint-mobile) {
+              width: 100%;
+              text-align: center;
+              padding: 0.75rem 1.5rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+// Hero Section
+.hero {
+  background: linear-gradient(135deg, $primary-color, $secondary-color);
+  color: white;
+  text-align: center;
+  padding: 5rem 1rem;
+
+  .hero-buttons {
+    margin-top: 2rem;
+
+    .btn-primary, .btn-outline {
+      display: inline-block;
+      padding: 0.75rem 1.8rem;
+      margin: 0 0.75rem;
+      border-radius: 5px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+      background: white;
+      color: $primary-color;
+      border: 2px solid white;
+      
+      &:hover {
+        background: transparent;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    .btn-outline {
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      color: white;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+
+  h2 {
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+
+    @media (max-width: $breakpoint-mobile) {
+      font-size: 2rem;
+    }
+  }
+
+  p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+
+    @media (max-width: $breakpoint-mobile) {
+      font-size: 1rem;
+      padding: 0 1rem;
+    }
+  }
+}
+
+// Clock Section
+.clock-section {
+  text-align: center;
+  background: $dark-bg;
+  padding: 3rem 0;
+
+  .clock-card {
+    background: $card-bg;
+    display: inline-block;
+    padding: 2rem 3rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba($secondary-color, 0.1);
+    
+    @media (max-width: $breakpoint-mobile) {
+      padding: 1.5rem 2rem;
+      width: 90%;
+      margin: 0 auto;
+    }
+    
+    h3 {
+      color: $secondary-color;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+
+      @media (max-width: $breakpoint-mobile) {
+        font-size: 2rem;
+      }
+    }
+
+    p {
+      color: $text-color;
+      font-style: italic;
+      opacity: 0.9;
+
+      @media (max-width: $breakpoint-mobile) {
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+// Features
+.features {
+  text-align: center;
+  padding: 4rem 1rem;
+  background: $dark-bg;
+
+  h2 {
+    color: $primary-contrast;
+    margin-bottom: 2rem;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+
+    .card {
+      background: $card-bg;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba($secondary-color, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+      h3 {
+        color: $secondary-color;
+        margin-bottom: 1rem;
+      }
+
+      p {
+        color: $text-color;
+        opacity: 0.9;
+      }
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+      }
+    }
+  }
+}
+
+// Motivation
+.motivation {
+  background: $primary-color;
+  color: white;
+  text-align: center;
+  padding: 3rem 1rem;
+  blockquote {
+    font-size: 1.5rem;
+    font-style: italic;
+  }
+}
+
+// Contact Preview
+.contact-preview {
+  text-align: center;
+  padding: 4rem 1rem;
+  background: $dark-bg;
+  color: $text-color;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, $secondary-color, transparent);
+  }
+
+  h2 {
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    color: $primary-contrast;
+  }
+
+  p {
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    opacity: 0.9;
+  }
+
+  .btn-primary {
+    background: $secondary-color;
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 5px;
+    display: inline-block;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+
+    &:hover {
+      background: transparent;
+      border-color: $secondary-color;
+      color: $secondary-color;
+      transform: translateY(-2px);
+    }
+  }
+}
+
+// About Page Styles
+.about-hero {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, 
+    rgba($primary-color, 0.9),
+    rgba($secondary-color, 0.8)
+  ),
+  url('../images/hero-bg.jpg') center/cover no-repeat;
+  
+  .hero-content {
+    max-width: 800px;
+    
+    h2 {
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+      
+      @media (max-width: $breakpoint-mobile) {
+        font-size: 2.5rem;
+      }
+    }
+  }
+}
+
+.mission-section,
+.story-section,
+.creator-section {
+  padding: 5rem 2rem;
+  background: $dark-bg;
+  
+  @media (max-width: $breakpoint-mobile) {
+    padding: 3rem 1rem;
+  }
+  
+  h2 {
+    text-align: center;
+    color: $primary-contrast;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    
+    @media (max-width: $breakpoint-mobile) {
+      font-size: 2rem;
+    }
+  }
+}
+
+.mission-card,
+.creator-card {
+  background: $card-bg;
+  padding: 3rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba($secondary-color, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+  
+  p {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: $text-color;
+    text-align: center;
+    
+    @media (max-width: $breakpoint-mobile) {
+      font-size: 1rem;
+    }
+  }
+}
+
+/* Creator card layout enhancements */
+.creator-card {
+  .creator-grid {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 1.5rem;
+    align-items: center;
+
+    @media (max-width: $breakpoint-mobile) {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+  }
+
+  .creator-media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .creator-photo {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: darken($card-bg, 6%);
+    border: 4px solid rgba($secondary-color, 0.06);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+  }
+
+  /* Smaller campus image variant used near the creator */
+  .campus-photo {
+    width: 100%;
+    max-width: 220px;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-top: 0.75rem;
+    display: block;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  }
+
+  .creator-info {
+    h2 {
+      margin-top: 0;
+      text-align: left;
+    }
+
+    p.meta {
+      margin-top: 0.75rem;
+      color: $text-color;
+      opacity: 0.95;
+      font-size: 1rem;
+    }
+
+    .org-logos {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin-top: 1rem;
+
+      @media (max-width: $breakpoint-mobile) {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .org-logo {
+        height: 40px;
+        max-width: 120px;
+        object-fit: contain;
+        opacity: 0.95;
+        background: transparent;
+      }
+    }
+  }
+}
+
+.story-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  
+  .story-card {
+    background: $card-bg;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba($secondary-color, 0.1);
+    transition: transform 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-5px);
+    }
+    
+    h3 {
+      color: $secondary-color;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+    
+    p {
+      color: $text-color;
+      line-height: 1.6;
+    }
+  }
+}
+
+.about-features {
+  background: $dark-bg;
+  padding: 5rem 2rem;
+  
+  @media (max-width: $breakpoint-mobile) {
+    padding: 3rem 1rem;
+  }
+}
+
+.about-quote {
+  background: $primary-bg;
+  padding: 5rem 2rem;
+  
+  blockquote {
+    font-size: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    
+    @media (max-width: $breakpoint-mobile) {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+.cta-section {
+  text-align: center;
+  padding: 5rem 2rem;
+  background: $card-bg;
+  
+  h2 {
+    color: $primary-contrast;
+    margin-bottom: 1rem;
+    font-size: 2.5rem;
+    
+    @media (max-width: $breakpoint-mobile) {
+      font-size: 2rem;
+    }
+  }
+  
+  p {
+    color: $text-color;
+    margin-bottom: 2rem;
+    font-size: 1.2rem;
+    
+    @media (max-width: $breakpoint-mobile) {
+      font-size: 1rem;
+    }
+  }
+  
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    
+    .btn-primary,
+    .btn-outline {
+      display: inline-block;
+      padding: 1rem 2rem;
+      border-radius: 5px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background: $secondary-color;
+      color: white;
+      border: 2px solid $secondary-color;
+      
+      &:hover {
+        background: transparent;
+        color: $secondary-color;
+        transform: translateY(-2px);
+      }
+    }
+    
+    .btn-outline {
+      border: 2px solid $secondary-color;
+      color: $secondary-color;
+      
+      &:hover {
+        background: rgba($secondary-color, 0.1);
+        transform: translateY(-2px);
+      }
+    }
+  }
+}
+
+// Animation Classes
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+}
+
+.slide-in {
+  /* Make slide-in elements visible by default so content is accessible
+     even if JavaScript doesn't run immediately. JS can still add the
+     .visible class to animate elements when they enter the viewport. */
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.6s ease;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Footer
+footer {
+  text-align: center;
+  padding: 1rem;
+  background: $primary-color;
+  color: white;
+}
+
+// ===============================
+// CONTACT PAGE STYLES
+// ===============================
+.contact-section {
+  background: $dark-bg;
+  color: $text-color;
+  padding: 5rem 2rem;
+
+  .contact-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    @media (max-width: $breakpoint-mobile) {
+      flex-direction: column;
+      gap: 2rem;
+    }
+  }
+
+  // LEFT: Contact Info
+  .contact-left {
+    flex: 1;
+    background: $card-bg;
+    padding: 2.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba($secondary-color, 0.1);
+    animation: fadeIn 1s ease forwards;
+
+    h2 {
+      color: $secondary-color;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+    }
+
+    p {
+      color: $text-color;
+      opacity: 0.9;
+      margin-bottom: 0.8rem;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+
+      i {
+        color: $secondary-color;
+        font-size: 1.2rem;
+      }
+    }
+
+    .social-links {
+      margin-top: 1.5rem;
+
+      a {
+        color: $secondary-color;
+        font-size: 1.3rem;
+        margin-right: 1rem;
+        transition: 0.3s;
+
+        &:hover {
+          color: lighten($secondary-color, 15%);
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+
+  // RIGHT: Form
+  .contact-form {
+    flex: 1;
+    background: $card-bg;
+    padding: 2.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba($secondary-color, 0.1);
+    animation: fadeIn 1s ease forwards;
+
+    h2 {
+      color: $secondary-color;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      input,
+      textarea {
+        background: darken($card-bg, 4%);
+        border: 1px solid rgba($secondary-color, 0.15);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        color: $text-color;
+        font-size: 1rem;
+        transition: 0.3s ease;
+
+        &:focus {
+          border-color: $secondary-color;
+          outline: none;
+          box-shadow: 0 0 5px rgba($secondary-color, 0.3);
+        }
+      }
+
+      textarea {
+        resize: none;
+        min-height: 120px;
+      }
+
+      button {
+        background: $secondary-color;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: transparent;
+          border: 2px solid $secondary-color;
+          color: $secondary-color;
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+}
