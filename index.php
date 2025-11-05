@@ -1,3 +1,9 @@
+<?php
+session_start();
+require_once __DIR__ . '/includes/auth_helpers.php';
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,50 +13,55 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-  integrity="sha512-om4rGQOdw8/xyC3Y2V3wPfG7Wv5WcR1TF0v0cJfqXSGK5SmjLxq5FZPOY3+DKFvWkwIh6+3DgVgFNHp3wzj+7A=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-/>
   <link rel="stylesheet" href="./assets/styles/styles.css" />
   <link rel="icon" href="./assets/images/taskmaster.png">
   <script src="https://kit.fontawesome.com/2ec6a47486.js" crossorigin="anonymous"></script>
-  <script defer src="./assets/js/main.js"></script>
+  <script defer src="./assets/js/index.js"></script>
 </head>
 <body>
-
-  <!-- NAVBAR --> 
   <header class="navbar">
     <div class="container">
-      <h1><a href="index.html" class="logo">Task <span>Master</span></a></h1>
+      <h1><a href="<?= is_logged_in() ? 'dashboard.php' : 'index.php' ?>" class="logo">Task <span>Master</span></a></h1>
+      
       <button class="burger-menu" aria-label="Toggle menu" aria-expanded="false">
         <span></span>
         <span></span>
         <span></span>
       </button>
+
       <nav aria-label="Main navigation">
         <ul>
-          <li><a href="#" role="button">Home</a></li>
-          <li><a href="about.html" role="button">About</a></li>
-          <li><a href="contact.html" role="button">Contact</a></li>
-          <li><a href="login.html" role="button">Login</a></li>
-          <li><a href="register.html" class="btn" role="button">Get Started</a></li>
+          <li><a href="<?= is_logged_in() ? 'dashboard.php' : 'index.php' ?>" role="button">Home</a></li>
+          <li><a href="about.php" role="button">About</a></li>
+          <li><a href="contact.php" role="button">Contact</a></li>
+
+          <?php if (is_logged_in()): ?>
+            <li><a href="dashboard.php" class="btn" role="button">Dashboard</a></li>
+            <li><a href="includes/logout.php" role="button">Logout</a></li>
+          <?php else: ?>
+            <li><a href="login.php" role="button">Login</a></li>
+            <li><a href="register.php" class="btn" role="button">Get Started</a></li>
+          <?php endif; ?>
         </ul>
       </nav>
     </div>
-  </header>
+</header>
 
   <!-- HERO SECTION -->
   <section class="hero">
-    <div class="hero-content">
-      <h2>Take Control of Your Day</h2>
+    <div class="hero-content fade-in">
+      <h2><span class="highlight-text">Take Control</span> of Your Day</h2>
       <p>Plan, track, and achieve your goals — all in one place.</p>
       <div class="hero-buttons">
-        <a href="register.html" class="btn-primary" role="button">Get Started</a>
-        <a href="login.html" class="btn-outline" role="button">Login</a>
-      </div>
+      <?php if (is_logged_in()): ?>
+        <a href="dashboard.php" class="btn-primary" role="button">Go to Dashboard</a>
+        <a href="includes/logout.php" class="btn-outline" role="button">Logout</a>
+      <?php else: ?>
+        <a href="register.php" class="btn-primary" role="button">Get Started</a>
+        <a href="login.php" class="btn-outline" role="button">Login</a>
+      <?php endif; ?>
+</div>
+
     </div>
   </section>
 
@@ -98,12 +109,15 @@
   <section class="contact-preview">
     <h2>Got Questions or Feedback?</h2>
     <p>Reach out — let’s build better habits together.</p>
-    <a href="contact.html" class="btn-primary">Contact Us</a>
+    <a href="<?= is_logged_in() ? 'contact.php' : 'login.php' ?>" class="btn-primary">Contact Us</a>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    <p>© 2025 Task Master. Built with focus and passion.</p>
+    <a href="terms.php" class="link-button">Terms of Service</a>
+    <a href="privacy.php" class="link-button">Privacy</a>
+    <a href="faq.php" class="link-button">FAQ</a>
+    <p>© <?= date('Y') ?> Task Master. Built with focus and passion.</p>
   </footer>
 
 </body>

@@ -1092,4 +1092,213 @@ footer {
   to {
     opacity: 1;
   }
-}/*# sourceMappingURL=styles.css.map */
+}
+.dashboard-section {
+  min-height: calc(100vh - 70px);
+  padding: 2rem 0;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 35% 65%;
+  gap: 2rem;
+  width: 100%;
+  max-width: 95rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+.dashboard-grid .dashboard-left {
+  min-width: 350px;
+}
+.dashboard-grid .dashboard-right {
+  min-width: 500px;
+}
+@media (max-width: 1200px) {
+  .dashboard-grid {
+    gap: 1.5rem;
+    grid-template-columns: 40% 60%;
+  }
+}
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  .dashboard-grid .dashboard-left,
+  .dashboard-grid .dashboard-right {
+    min-width: 100%;
+  }
+}
+
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.dashboard-left,
+.dashboard-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.glass-card, #calendarWidget, .task-list, .quick-add, .greeting-card {
+  background: rgb(48.92, 58.12, 71);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  padding: 1.25rem;
+}
+
+.greeting-card h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+.greeting-card p {
+  opacity: 0.9;
+}
+
+.quick-add .quick-add-form {
+  display: flex;
+  gap: 0.75rem;
+}
+.quick-add .quick-add-form input {
+  flex: 1;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: #F5F5F5;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 123, 255, 0.25);
+}
+.quick-add .quick-add-form button {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+}
+
+.task-list {
+  min-height: 260px;
+}
+.task-list .tasks {
+  display: grid;
+  gap: 0.75rem;
+  list-style: none;
+}
+
+.task-item {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(0, 123, 255, 0.25);
+  border-radius: 10px;
+  padding: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.task-item.done .task-name {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.btn {
+  background: rgba(0, 123, 255, 0.25);
+  border: 1px solid rgba(0, 123, 255, 0.4);
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  transition: 0.25s;
+}
+.btn:hover {
+  background: rgba(0, 123, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  background: transparent;
+  color: #007bff;
+  border: 1px solid rgba(0, 123, 255, 0.4);
+}
+.btn-outline:hover {
+  background: rgba(0, 123, 255, 0.18);
+}
+
+#calendarWidget {
+  max-width: 50rem;
+  width: 100%;
+  min-height: 420px;
+  margin-top: 0;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.calendar-header .calendar-title {
+  font-size: 1.1rem;
+}
+
+.calendar-nav-btn {
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  color: white;
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.calendar-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.calendar-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 0.88rem;
+}
+.calendar-table th {
+  opacity: 0.8;
+  font-weight: 600;
+  padding-bottom: 0.4rem;
+}
+.calendar-table td {
+  padding: 0.55rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.calendar-table td:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.calendar-table tbody tr {
+  height: 46px;
+}
+
+.calendar-today {
+  background: #4a90e2;
+  color: white !important;
+  font-weight: 600;
+  box-shadow: 0 0 8px rgba(74, 144, 226, 0.7);
+}
+
+.calendar-fade {
+  animation: fadeCalendar 0.25s ease;
+}
+
+@keyframes fadeCalendar {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}/*# sourceMappingURL=dashboard.css.map */

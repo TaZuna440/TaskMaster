@@ -23,14 +23,18 @@ window.addEventListener('scroll', () => {
   }
 });
 
-// Live Clock
+// Live Clock (safe on pages without #clock)
 function updateClock() {
   const clock = document.getElementById("clock");
+  if (!clock) return; // guard for pages without the clock element
   const now = new Date();
   clock.textContent = now.toLocaleTimeString();
 }
-setInterval(updateClock, 1000);
-updateClock();
+// Initialize only if #clock exists
+if (document.getElementById("clock")) {
+  setInterval(updateClock, 1000);
+  updateClock();
+}
 
 // Random Motivational Quotes
 const quotes = [
@@ -83,6 +87,112 @@ window.addEventListener('scroll', () => {
     isScrolling = true;
   }
 });
+
+// === Simple Themed Calendar ===
+function renderCalendar(containerId) {
+  const today = new Date();
+  let currentMonth = today.getMonth();
+  let currentYear = today.getFullYear();
+
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  function daysInMonth(year, month) {
+    return new Date(year, month + 1, 0).getDate();
+  }
+
+  function firstDayOfMonth(year, month) {
+    return new Date(year, month, 1).getDay();
+  }
+
+  function render() {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = "";
+
+    // Header
+    const calHeader = document.createElement('div');
+    calHeader.className = 'calendar-header';
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'calendar-nav-btn';
+    prevBtn.innerHTML = "&#8592;";
+    prevBtn.title = "Previous Month";
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'calendar-nav-btn';
+    nextBtn.innerHTML = "&#8594;";
+    nextBtn.title = "Next Month";
+    const monthTitle = document.createElement('span');
+    monthTitle.className = 'calendar-title';
+    monthTitle.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+    calHeader.appendChild(prevBtn);
+    calHeader.appendChild(monthTitle);
+    calHeader.appendChild(nextBtn);
+    container.appendChild(calHeader);
+
+    // Calendar Table
+    const table = document.createElement('table');
+    table.className = 'calendar-table';
+    const daysRow = document.createElement('tr');
+    ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(d => {
+      const th = document.createElement('th');
+      th.textContent = d;
+      daysRow.appendChild(th);
+    });
+    const thead = document.createElement('thead');
+    thead.appendChild(daysRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    let date = 1;
+    const totalDays = daysInMonth(currentYear, currentMonth);
+    const firstDayIdx = firstDayOfMonth(currentYear, currentMonth);
+    for (let i = 0; i < 6; i++) {
+      const row = document.createElement('tr');
+      for (let j = 0; j < 7; j++) {
+        const cell = document.createElement('td');
+        if (i === 0 && j < firstDayIdx) {
+          cell.innerHTML = "";
+        } else if (date > totalDays) {
+          cell.innerHTML = "";
+        } else {
+          cell.textContent = date;
+          // Highlight today
+          if (
+            date === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear()
+          ) {
+            cell.className = 'calendar-today';
+          }
+          date++;
+        }
+        row.appendChild(cell);
+      }
+      tbody.appendChild(row);
+      if (date > totalDays) break;
+    }
+    table.appendChild(tbody);
+    container.appendChild(table);
+
+    prevBtn.onclick = () => {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentYear--;
+        currentMonth = 11;
+      }
+      render();
+    };
+    nextBtn.onclick = () => {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentYear++;
+        currentMonth = 0;
+      }
+      render();
+    };
+  }
+  render();
+}
 
 // Responsive Navigation Menu
 document.addEventListener('DOMContentLoaded', () => {
@@ -142,4 +252,47 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleMenu();
         }
     });
+
+    // Dashboard enhancements
+    const quickAdd = document.getElementById('quickAddInput');
+    if (quickAdd) {
+      quickAdd.focus();
+    }
+
+    document.querySelectorAll('form.confirm-delete').forEach(form => {
+      form.addEventListener('submit', (e) => {
+        if (!confirm('Delete this task?')) {
+          e.preventDefault();
+        }
+      });
+    });
+
+    renderCalendar('calendarWidget');
+
+    // Client-side greeting based on local time
+    function computeGreeting() {
+      const now = new Date();
+      const hour = now.getHours();
+      if (hour < 12) return 'Good morning';
+      if (hour < 18) return 'Good afternoon';
+      return 'Good evening';
+    }
+
+    function updateGreetingTitle() {
+      const el = document.getElementById('greetingTitle');
+      if (!el) return;
+      const name = el.getAttribute('data-username') || 'there';
+      el.textContent = `${computeGreeting()}, ${name} 👋`;
+    }
+
+    updateGreetingTitle();
+    // Refresh at the start of the next hour, then hourly
+    (function scheduleHourlyUpdate() {
+      const now = new Date();
+      const msUntilNextHour = (60 - now.getMinutes()) * 60 * 1000 - now.getSeconds() * 1000 - now.getMilliseconds();
+      setTimeout(() => {
+        updateGreetingTitle();
+        setInterval(updateGreetingTitle, 60 * 60 * 1000);
+      }, Math.max(1000, msUntilNextHour));
+    })();
 });

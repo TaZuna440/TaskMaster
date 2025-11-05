@@ -10,25 +10,30 @@
   <link rel="stylesheet" href="./assets/styles/styles.css" />
   <link rel="icon" href="./assets/images/taskmaster.png">
   <script src="https://kit.fontawesome.com/2ec6a47486.js" crossorigin="anonymous"></script>
-  <script defer src="./assets/js/main.js"></script>
+  <script defer src="./assets/js/about.js"></script>
 </head>
 <body>
   <!-- NAVBAR --> 
   <header class="navbar">
     <div class="container">
-      <h1><a href="index.html" class="logo">Task <span>Master</span></a></h1>
-      <button class="burger-menu" aria-label="Toggle menu">
+      <h1><a href="index.php" class="logo">Task <span>Master</span></a></h1>
+      <button class="burger-menu" aria-label="Toggle menu" aria-expanded="false">
         <span></span>
         <span></span>
         <span></span>
       </button>
-      <nav>
+      <nav aria-label="Main navigation">
         <ul>
-          <li><a href="index.html" role="button">Home</a></li>
-          <li><a href="#" role="button">About</a></li>
-          <li><a href="contact.html" role="button">Contact</a></li>
-          <li><a href="login.html" role="button">Login</a></li>
-          <li><a href="register.html" class="btn" role="button">Get Started</a></li>
+          <li><a href="index.php" role="button">Home</a></li>
+          <li><a href="about.php" role="button">About</a></li>
+          <li><a href="contact.php" role="button">Contact</a></li>
+<?php session_start(); if (!empty($_SESSION['user'])): ?>
+          <li><a href="dashboard.php" role="button">Dashboard</a></li>
+          <li><a href="includes/logout.php" role="button">Logout</a></li>
+<?php else: ?>
+          <li><a href="login.php" role="button">Login</a></li>
+          <li><a href="register.php" class="btn" role="button">Get Started</a></li>
+<?php endif; ?>
         </ul>
       </nav>
     </div>
@@ -69,16 +74,6 @@
     </div>
   </section>
 
-  <!-- CREATOR SECTION -->
-  <section class="creator-section slide-in">
-    <div class="container">
-      <div class="creator-card">
-        <h2>The Creator</h2>
-        <p>Created by an aspiring IT professional passionate about helping others improve focus and productivity. With a background in software development and user experience design, Task Master represents our commitment to making productivity tools that actually work for real people.</p>
-      </div>
-    </div>
-  </section>
-
   <!-- FEATURES HIGHLIGHT -->
   <section class="features about-features slide-in">
     <div class="container">
@@ -104,6 +99,22 @@
     </div>
   </section>
 
+  <!-- CREATOR SECTION -->
+  <section class="creator-section slide-in">
+    <div class="container">
+      <div class="creator-card">
+        <h2>Developer Info</h2> 
+        <p>Developed by: EJ Boy Pomasin</p>
+        <p>Year Level | Semester: Sophomore | 1st Semester</p>
+        <p>Section: IT202</p>
+        <p>Subject: Web System and Technologies</p>
+        <p>Instructor: Richard De Guzman</p>
+        <br>
+        <p>Student of Global Reciprocal Colleges</p>
+      </div>
+    </div>
+  </section>
+
   <!-- QUOTE SECTION -->
   <section class="motivation about-quote slide-in">
     <blockquote id="about-quote">
@@ -117,15 +128,18 @@
       <h2>Ready to Transform Your Productivity?</h2>
       <p>Join thousands of users who have already taken control of their time and goals.</p>
       <div class="cta-buttons">
-        <a href="register.html" class="btn-primary">Start Your Journey</a>
-        <a href="contact.html" class="btn-outline">Learn More</a>
+        <a href="register.php" class="btn-primary">Start Your Journey</a>
+        <a href="contact.php" class="btn-outline">Learn More</a>
       </div>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    <p>© 2025 Task Master. Built with focus and passion.</p>
+    <a href="terms.php" class="link-button">Terms of Service</a>
+    <a href="privacy.php" class="link-button">Privacy</a>
+    <a href="faq.php" class="link-button">FAQ</a>
+    <p>© <?= date('Y') ?> Task Master. Built with focus and passion.</p>
   </footer>
 </body>
 </html>
