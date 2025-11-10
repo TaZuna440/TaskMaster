@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    renderCalendar('calendarWidget');
+    // renderCalendar('calendarWidget');
 
     // Client-side greeting based on local time
     function computeGreeting() {

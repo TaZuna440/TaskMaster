@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/includes/security_headers.php';
 require_once __DIR__ . '/includes/auth_helpers.php';
 require_once __DIR__ . '/includes/db_connect.php';
 require_login();
@@ -13,8 +14,8 @@ unset($_SESSION['form_flash']);
 
 $userId = (int)$_SESSION['user']['id'];
 
-// Fetch tasks for user
-$stmt = $pdo->prepare('SELECT id, task_name, status, created_at FROM tasks WHERE user_id = ? ORDER BY created_at DESC');
+// ✅ FIX #11 & #12: Fetch tasks with task_date
+$stmt = $pdo->prepare('SELECT id, task_name, task_date, status, created_at FROM tasks WHERE user_id = ? ORDER BY task_date ASC, created_at DESC');
 $stmt->execute([$userId]);
 $tasks = $stmt->fetchAll();
 ?>
@@ -23,7 +24,7 @@ $tasks = $stmt->fetchAll();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
+  <title>Dashboard - Task Master</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -58,7 +59,7 @@ $tasks = $stmt->fetchAll();
       <?php $username = htmlspecialchars($_SESSION['user']['username'] ?? 'there'); ?>
       <div class="greeting-card slide-in">
         <h2 id="greetingTitle" data-username="<?= $username ?>">&nbsp;</h2>
-        <p>Stay focused and make progress. What’s the next task you’ll tackle?</p>
+        <p>Stay focused and make progress. What's the next task you'll tackle?</p>
       </div>
 
       <?php if (!empty($flash)): ?>
@@ -67,12 +68,31 @@ $tasks = $stmt->fetchAll();
         </div>
       <?php endif; ?>
 
+      <!-- ✅ FIX #11: Add task_date input field -->
       <div class="quick-add">
-        <form action="includes/task_process.php" method="POST" class="quick-add-form">
+        <form action="includes/task_process.php" method="POST" class="quick-add-form" id="addTaskForm">
           <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
           <input type="hidden" name="action" value="add">
-          <input id="quickAddInput" type="text" name="task_name" placeholder="Add a new task..." maxlength="200" required>
-          <button type="submit" class="btn">ADD</button>
+          
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <input 
+              id="quickAddInput" 
+              type="text" 
+              name="task_name" 
+              placeholder="Add a new task..." 
+              maxlength="200" 
+              required
+              style="flex: 1; min-width: 200px;">
+            
+            <input 
+              type="date" 
+              name="task_date" 
+              required 
+              value="<?= date('Y-m-d') ?>"
+              style="padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(0, 123, 255, 0.25); background: rgba(255, 255, 255, 0.06); color: #F5F5F5;">
+            
+            <button type="submit" class="btn">ADD</button>
+          </div>
         </form>
       </div>
 
@@ -87,31 +107,37 @@ $tasks = $stmt->fetchAll();
         <?php else: ?>
           <ul class="tasks">
             <?php foreach ($tasks as $t): ?>
-              <li class="task-item <?= $t['status'] === 'Done' ? 'done' : '' ?>">
+              <li class="task-item <?= $t['status'] === 'Done' ? 'done' : '' ?>" data-task-id="<?= (int)$t['id'] ?>">
                 <div class="task-main">
                   <span class="task-name"><?= htmlspecialchars($t['task_name']) ?></span>
-                  <span class="task-status"><?= htmlspecialchars($t['status']) ?></span>
+                  <span class="task-status" style="font-size: 0.85rem; padding: 0.25rem 0.5rem; border-radius: 4px; background: <?= $t['status'] === 'Done' ? '#22c55e' : '#f59e0b' ?>; color: white;">
+                    <?= htmlspecialchars($t['status']) ?>
+                  </span>
                 </div>
 
                 <div class="task-meta">
-                  <small><?= htmlspecialchars(date('M d, Y H:i', strtotime($t['created_at']))) ?></small>
+                  <small>📅 <?= htmlspecialchars(date('M d, Y', strtotime($t['task_date']))) ?></small>
+                  <small style="opacity: 0.7;">• Created: <?= htmlspecialchars(date('M d, H:i', strtotime($t['created_at']))) ?></small>
                 </div>
 
                 <div class="task-controls">
-                  <a class="btn-outline" href="task_edit.php?id=<?= (int)$t['id'] ?>">Edit</a>
+                  <!-- ✅ FIX #13: Add inline edit functionality -->
+                  <button class="btn-outline" onclick="editTask(<?= (int)$t['id'] ?>, '<?= htmlspecialchars($t['task_name'], ENT_QUOTES) ?>', '<?= htmlspecialchars($t['task_date']) ?>')">
+                    Edit
+                  </button>
 
-                  <form action="includes/task_process.php" method="POST" class="inline-form">
+                  <form action="includes/task_process.php" method="POST" class="inline-form" style="display: inline;">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                     <input type="hidden" name="action" value="toggle">
                     <input type="hidden" name="id" value="<?= (int)$t['id'] ?>">
-                    <button class="btn-outline">Toggle</button>
+                    <button class="btn-outline" type="submit">Toggle</button>
                   </form>
 
-                  <form action="includes/task_process.php" method="POST" class="inline-form">
+                  <form action="includes/task_process.php" method="POST" class="inline-form confirm-delete" style="display: inline;">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="id" value="<?= (int)$t['id'] ?>">
-                    <button class="btn-outline danger">Delete</button>
+                    <button class="btn-outline danger" type="submit">Delete</button>
                   </form>
                 </div>
 
@@ -130,6 +156,44 @@ $tasks = $stmt->fetchAll();
   </div>
 </section>
 
+<!-- ✅ FIX #13: Edit Task Modal -->
+<div id="editTaskModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 1000; align-items: center; justify-content: center;">
+  <div style="background: #1F2937; padding: 2rem; border-radius: 12px; max-width: 500px; width: 90%;">
+    <h3 style="margin-bottom: 1.5rem; color: #F97316;">Edit Task</h3>
+    <form action="includes/task_process.php" method="POST" id="editTaskForm">
+      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+      <input type="hidden" name="action" value="update">
+      <input type="hidden" name="id" id="editTaskId">
+      
+      <div style="margin-bottom: 1rem;">
+        <label style="display: block; margin-bottom: 0.5rem;">Task Name:</label>
+        <input 
+          type="text" 
+          name="task_name" 
+          id="editTaskName" 
+          required 
+          maxlength="200"
+          style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(0, 123, 255, 0.25); background: rgba(255, 255, 255, 0.06); color: #F5F5F9;">
+      </div>
+      
+      <div style="margin-bottom: 1.5rem;">
+        <label style="display: block; margin-bottom: 0.5rem;">Date:</label>
+        <input 
+          type="date" 
+          name="task_date" 
+          id="editTaskDate" 
+          required
+          style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(0, 123, 255, 0.25); background: rgba(255, 255, 255, 0.06); color: #F5F5F9;">
+      </div>
+      
+      <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+        <button type="button" class="btn-outline" onclick="closeEditModal()">Cancel</button>
+        <button type="submit" class="btn" style="background: #F97316; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer;">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <footer>
     <a href="terms.php" class="link-button">Terms of Service</a>
     <a href="privacy.php" class="link-button">Privacy</a>
@@ -138,6 +202,36 @@ $tasks = $stmt->fetchAll();
   </footer>
 
   <script defer src="./assets/js/main.js"></script>
-  <script></script>
+  <script defer src="./assets/js/calendar.js"></script>
+  <script>
+    // ✅ FIX #13: Edit task functionality
+    function editTask(id, name, date) {
+      document.getElementById('editTaskId').value = id;
+      document.getElementById('editTaskName').value = name;
+      document.getElementById('editTaskDate').value = date;
+      document.getElementById('editTaskModal').style.display = 'flex';
+    }
+
+    function closeEditModal() {
+      document.getElementById('editTaskModal').style.display = 'none';
+    }
+
+    // Close modal on outside click
+    document.getElementById('editTaskModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeEditModal();
+      }
+    });
+
+    // Auto-hide flash messages
+    setTimeout(() => {
+      const flash = document.querySelector('.flash-message');
+      if (flash) {
+        flash.style.transition = "opacity 0.5s ease";
+        flash.style.opacity = "0";
+        setTimeout(() => flash.remove(), 500);
+      }
+    }, 4000);
+  </script>
 </body>
 </html>

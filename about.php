@@ -1,3 +1,9 @@
+<?php 
+  session_start();
+  require_once __DIR__ . '/includes/security_headers.php';
+  require_once __DIR__ . '/includes/auth_helpers.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,7 +33,7 @@
           <li><a href="index.php" role="button">Home</a></li>
           <li><a href="about.php" role="button">About</a></li>
           <li><a href="contact.php" role="button">Contact</a></li>
-<?php session_start(); if (!empty($_SESSION['user'])): ?>
+<?php if (!empty($_SESSION['user'])): ?>
           <li><a href="dashboard.php" role="button">Dashboard</a></li>
           <li><a href="includes/logout.php" role="button">Logout</a></li>
 <?php else: ?>
